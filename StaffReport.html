@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Details</title>
+</head>
+<style>
+    body {
+        background-color: rgb(13, 42, 57);
+    }
+
+    h1 {
+        color: #f8f2f2;
+        /* text-align: center; */
+        margin-left: 45%;
+    }
+
+    .search {
+        margin: 0 43%;
+        padding-left: 1%;
+        padding-right: 10%;
+        height: 50px;
+        border-radius: 12px;
+    }
+
+    .search:hover {
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: white;
+        padding: 10px;
+        box-shadow: 5px 10px;
+        border-radius: 12px;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid #0c0000;
+
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align:center;
+    }
+
+    th {
+        background-color: rgb(200, 206, 210);
+        text-align: center;
+    }
+
+    tr:nth-child(even) {
+        background-color: rgb(200, 206, 210);
+    }
+
+    tr:hover {
+        background-color: rgb(200, 206, 210);
+        cursor: pointer;
+    }
+
+    img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+
+    .add {
+        margin: 0 50%;
+        border-radius: 12px;
+        padding: 1% 0;
+        width: 100px;
+        background-color: rgb(200, 206, 210);
+
+    }
+
+    .add:hover {
+        background-color: aliceblue;
+        cursor: pointer;
+    }
+
+    button {
+        background-color: red;
+        border-radius: 10px;
+        padding: 5px 12px;
+        border-color: #f8f2f2;
+    }
+
+    /* Modal styles */
+    .modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(34, 32, 32, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        
+
+        .modal-content {
+            background-color: white;
+            padding: 1px 50px;
+            border-radius: 5px;
+            width: 300px;
+
+
+        }
+        
+        .modal-content h2 {
+            color: #0c0000;
+            text-align: center;
+        }
+
+       
+
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+
+        
+
+        .modal-content button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        
+
+        #imagePreview {
+            width: 100%;
+            height: auto;
+            margin: 10px 0;
+        }
+
+        a{color: #0a0a0a; margin-left: 90%; background-color: aliceblue; padding: 12px; border-radius: 10px; cursor: pointer;
+        text-decoration: none;}
+        a:hover{background-color: gainsboro;}
+</style>
+<body>
+    <h1>Staff Report</h1>
+    <input type="text" id="searchInput" class="search"  placeholder="member ID OR First Name" onkeyup="filterById()" />
+
+    <a href="./Admin.html"> Go Admin Page</a>
+
+
+    <table id="staffTable" border="1">
+        <thead>
+            <tr>
+                <th>Staff ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Department</th>
+                <th>Position Name</th>
+                <th>Salary</th>
+                <th>Appointment Date</th>
+                <th>Date of Birth</th>
+                <th>Address 1</th>
+                <th>Address 2</th>
+                <th>Phone No 1</th>
+                <th>Phone No 2</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be populated here -->
+        </tbody>
+    </table>
+
+    <script>
+        const Designations = JSON.parse(localStorage.getItem('DesignationsData')) || [
+            { Id: "001Admin", PositionName: "Admin", salary: "50,000" },
+            { Id: "001Trainer", PositionName: "Trainer", salary: "40,000" },
+            { Id: "001Cleaner", PositionName: "Cleaner", salary: "30,000" }
+        ];
+
+        const StaffRoll = JSON.parse(localStorage.getItem('StaffRoll')) || [
+            { programID: "001Trainer", StaffID: "S001", salary: "30000", DepartID: "Male001", enrollDate: "2024-05-01" }
+        ];
+
+        const Staff = JSON.parse(localStorage.getItem('StaffData')) || [
+            { id: "S001", firstName: "John", lastName: "Doe", dateOfBirth: "1990-05-15", Address1: "Oluvil", Address2: "Jaffna", Phoneno1: "0752879546", Phoneno2: "0758963215", Email: "hasni@gmail.com" }
+        ];
+
+        const GenderDepartment = JSON.parse(localStorage.getItem('GenderDepartment')) || [
+            { programId: "Male001", programName: "Male Department" }
+        ];
+
+        // Combine data from different sources
+        function getCombinedStaffData() {
+            return StaffRoll.map(staffRollEntry => {
+                // Find the corresponding staff
+                const staff = Staff.find(s => s.id === staffRollEntry.StaffID);
+
+                // Find the corresponding department
+                const department = GenderDepartment.find(d => d.programId === staffRollEntry.DepartID);
+
+                // Find the corresponding position details
+                const designation = Designations.find(d => d.Id === staffRollEntry.programID);
+
+                // Return combined data
+                return {
+                    StaffID: staffRollEntry.StaffID,
+                    firstName: staff ? staff.firstName : 'Unknown',
+                    lastName: staff ? staff.lastName : 'Unknown',
+                    department: department ? department.programName : 'Unknown',
+                    positionName: designation ? designation.PositionName : 'Unknown',
+                    salary: staffRollEntry.salary,
+                    appointmentDate: staffRollEntry.enrollDate,
+                    dateOfBirth: staff ? staff.dateOfBirth : 'Unknown',
+                    Address1: staff ? staff.Address1 : 'Unknown',
+                    Address2: staff ? staff.Address2 : 'Unknown',
+                    Phoneno1: staff ? staff.Phoneno1 : 'Unknown',
+                    Phoneno2: staff ? staff.Phoneno2 : 'Unknown',
+                    Email: staff ? staff.Email : 'Unknown'
+                };
+            });
+        }
+
+        // Function to render the combined staff data into the table
+        function renderStaffTable(data) {
+            const tableBody = document.querySelector("#staffTable tbody");
+            tableBody.innerHTML = ""; // Clear existing rows
+
+            data.forEach(entry => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${entry.StaffID}</td>
+                    <td>${entry.firstName}</td>
+                    <td>${entry.lastName}</td>
+                    <td>${entry.department}</td>
+                    <td>${entry.positionName}</td>
+                    <td>${entry.salary}</td>
+                    <td>${entry.appointmentDate}</td>
+                    <td>${entry.dateOfBirth}</td>
+                    <td>${entry.Address1}</td>
+                    <td>${entry.Address2}</td>
+                    <td>${entry.Phoneno1}</td>
+                    <td>${entry.Phoneno2}</td>
+                    <td>${entry.Email}</td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        }
+
+        function filterById() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const combinedData = getCombinedStaffData();
+            const filteredData = combinedData.filter(entry => entry.firstName.toLowerCase().includes(searchInput)||entry.StaffID.toLowerCase().includes(searchInput));
+            renderStaffTable(filteredData);
+        }
+
+       
+        // Render the table with combined data
+        renderStaffTable(getCombinedStaffData());
+    </script>
+</body>
+</html>

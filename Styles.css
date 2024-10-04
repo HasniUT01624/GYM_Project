@@ -1,0 +1,377 @@
+body {
+    margin: 0;
+}
+
+nav,
+footer {
+    background-color: rgb(13, 42, 57);
+    color: aliceblue;
+    padding: 1%;
+}
+
+
+img {
+    margin-top: 0px;
+    margin-bottom: -30px;
+}
+
+img,
+#banner,
+ul,
+li,
+h2 {
+    display: inline-block;
+}
+
+ul {
+    margin-left: 45%;
+}
+
+.Homepage_ul {
+    margin-left: 40%;
+}
+
+
+li,
+a {
+    padding: 10px;
+    font-size: 20px;
+}
+
+li:hover,
+.Home_Profile:hover,
+.Home_login:hover,
+.Register:hover,
+.Logout:hover,
+.ViweMember:hover {
+    background-color: aliceblue;
+    color: black;
+    border-radius: 25%;
+    cursor: pointer;
+}
+
+.Home_Profile,
+.Home_login {
+    text-decoration: none;
+    color: aliceblue;
+}
+
+.login {
+    margin-left: 4%;
+    background-color: aliceblue;
+    color: black;
+    border-radius: 25%;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+
+.bannerImg {
+    background-image: url(./images/gymImg.jpg);
+    background-size: cover;
+    height: 600px;
+    margin-top: 0%;
+    position: relative;
+
+}
+
+a {
+    text-decoration: none;
+}
+
+.Logout {
+    margin-left: 4%;
+}
+
+/* .Register {
+    color: aliceblue;
+    text-decoration: none;
+    border-radius: 25%;
+    cursor: pointer;
+}  */
+
+
+
+
+form {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* button[type="reset"] {
+    background-color: #f44336;
+} */
+
+
+/* #banner {
+    margin-left: 2%;
+    font-size: 35px;} */
+/* ---------------------------------------------------------- */
+/* http://127.0.0.1:5500/Login_page.html*/
+
+.login-container {
+    background-color: rgb(226, 240, 254);
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    width: 25%;
+    margin-left: 38%;
+    top: 40%;
+    position: absolute;
+}
+
+
+/* --------------------------------------------------------------------------------------- */
+/* http://127.0.0.1:5500/Member_Registation.html */
+.ViweMember {
+    text-decoration: none;
+    color: aliceblue;
+}
+
+/* ******************************************************************************************** */
+.login-container h1 {
+    margin-bottom: 20px;
+    margin-left: 35%;
+
+}
+
+.login-container label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.login-container input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(18, 66, 90);
+    border: none;
+    border-radius: 8px;
+    color: rgb(220, 237, 252);
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 8%;
+
+
+
+}
+
+
+.login-container button:hover {
+    background-color: rgb(13, 42, 57);
+}
+
+.error-message {
+    color: red;
+    margin-top: 12%;
+    font-size: 25px;
+}
+
+.error-border {
+    border-color: red;
+}
+
+/* ---------------------------------------------------------------- */
+/* Admin page .css */
+
+
+.admin_Body {
+    background-image: url(./images/gymImg.jpg);
+    background-size: cover;
+
+
+
+}
+
+.select-container {
+    background-color: rgb(230, 241, 252);
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    width: 25%;
+    margin-left: 38%;
+    top: 30%;
+    position: absolute;
+}
+
+
+
+.select-container a {
+    padding: 10px 100px;
+    background-color: rgb(18, 66, 90);
+    border: none;
+    border-radius: 8px;
+    color: aliceblue;
+    font-size: 20px;
+    cursor: pointer;
+    margin-top: 8%;
+    display: block;
+}
+
+.select-container a:hover {
+    background-color: rgb(13, 42, 57);
+}
+
+/* ---------------------------------------------------------------------------------------- */
+/* Member management.css */
+.search_Form input[type=text] {
+    width: 130px;
+    box-sizing: border-box;
+    border: 2px solid rgb(13, 42, 57);
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: rgb(18, 66, 90);
+    color: aliceblue;
+    background-position: 10px 10px;
+    /* background-repeat: no-repeat; */
+    padding: 12px 20px 12px 40px;
+    transition: width 0.4s ease-in-out;
+    margin-top: 1px;
+    margin-left: 4px;
+}
+
+.search_Form input[type=text]:focus {
+    width: 50%;
+}
+
+/* ------------------------------------------------------------------------------------ */
+.add_New_Memberbtn {
+    width: 10%;
+    padding: 10px;
+    background-color: rgb(18, 66, 90);
+    border: none;
+    border-radius: 8px;
+    color: rgb(220, 237, 252);
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 1px;
+}
+
+/* ------------------------------------------------------------------------------------- */
+.add_MemberContainer {
+    display: flex;
+    justify-content: space-between;
+}
+
+.add_Memberbtn:hover {
+    background-color: rgb(220, 237, 252);
+    color: rgb(18, 66, 90);
+}
+
+
+
+
+th {
+    font-size: 15px;
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 10px;
+    background-color: rgb(18, 66, 90);
+    color: aliceblue;
+}
+
+/* .checkbox{width:12%;} */
+
+
+input {
+    width: 94%;
+    border-radius: 5px;
+    padding: 15px 0px;
+    background-color: aliceblue;
+    color: rgb(18, 66, 90);
+}
+
+.dataDeletebtn {
+    width: 100%;
+    padding: 10px;
+    background-color: red;
+    border: none;
+    border-radius: 8px;
+    color: rgb(220, 237, 252);
+    font-size: 16px;
+    cursor: pointer;
+
+
+}
+
+.dataSavebtn {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(18, 66, 90);
+    border: none;
+    border-radius: 8px;
+    color: rgb(220, 237, 252);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.dataEditbtn {
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(18, 66, 90);
+    border: none;
+    border-radius: 8px;
+    color: rgb(220, 237, 252);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.dataAddbtn {
+    width: 10%;
+    padding: 10px;
+    background-color: rgb(18, 66, 90);
+    border: none;
+    border-radius: 8px;
+    color: rgb(220, 237, 252);
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 50%;
+}
+
+/* .dataSubmitbtn{width:10%;
+    padding: 10px;
+    background-color: rgb(18, 66, 90);
+   border: none;
+    border-radius: 8px;
+    color: rgb(220, 237, 252);
+    font-size: 16px;
+    cursor: pointer;
+margin-top: 5px;
+margin-bottom: 5px;
+margin-left: 50%;}  */
+
+
+.NumberRow {
+    background-color: rgb(18, 66, 90);
+    color: aliceblue;
+    width: 10%;
+    padding: 5px 0px;
+    text-align: center;
+    border-radius: 10%;
+    margin-left: 3px;
+    margin-bottom: 5px;
+}

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Staff salary payed</title>
+    <style>
+        /* Basic page styling */
+        body {
+            font-family: "Arial", sans-serif;
+            padding: 20px;
+          
+        background-color: rgb(13, 42, 57);
+    }        
+
+        h2 {
+            text-align: center;
+            color: #f8f2f2;
+        }
+
+        /* Table container styling */
+        #table-container {
+            width: 80%;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            overflow: hidden;
+        }
+
+        /* Table row styling */
+        .table-header,
+        .table-row {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table-header {
+            background-color: #eee;
+            font-weight: bold;
+        }
+
+        .table-cell {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-right: 1px solid #ddd;
+        }
+
+        .table-cell:last-child {
+            border-right: none;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Button styling */
+        /* button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        } */
+
+        button {
+        background-color: red;
+        border-radius: 10px;
+        padding: 5px 12px;
+        border-color: #f8f2f2;
+    }
+
+        .add-btn {
+            display: block;
+            margin: 20px auto;
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .delete-btn,
+        .save-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .save-btn {
+            background-color: #28d42d;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <h2 id="program-title"></h2>
+
+    <div id="table-container">
+        <div class="table-header">
+            <!-- <div class="table-cell"> Salary Payed Id</div> -->
+            <div class="table-cell">Position Id</div>
+            <div class="table-cell">Basic Salary</div>
+            <div class="table-cell">Payed</div>
+
+            <div class="table-cell">salary Payed Date</div>
+            <div class="table-cell">Actions</div>
+        </div>
+
+        <div class="table-row">
+            <!-- javascript -->
+        </div>
+    </div>
+
+    <button id="add-row-btn" class="add-btn">Add Row</button>
+    <button class="add"  style="width: 200px; margin-left:44%; background-color:green; height:47px;"><a href="./Payment.html" style="text-decoration: none; color: #f7f2f2;" >Go Payment Page</a>
+
+
+    <script>
+
+
+        const Salar = JSON.parse(localStorage.getItem('SalaryPayment')) || [];
+        const StaffRoll = JSON.parse(localStorage.getItem("StaffRoll")) || [];
+        const salaryPayed = JSON.parse(localStorage.getItem("salaryPayed")) || [];
+
+
+
+        const title = document.getElementById("program-title");
+        const addRowBtn = document.getElementById("add-row-btn");
+        const tableContainer = document.getElementById("table-container");
+
+
+
+
+        // this is load for url
+        const loadedProgramId = getQueryParam("programId");
+        const loadedProgram = Salar.find(
+            (p) => p.Id == loadedProgramId
+        );
+
+        title.innerHTML = loadedProgram.date;
+        showTable();
+
+        console.log(loadedProgramId);
+
+        // Add event listener to add a new row
+        addRowBtn.addEventListener("click", () => {
+    const newRow = document.createElement("div");
+    newRow.classList.add("table-row");
+
+    newRow.innerHTML = `
+        <!-- <div class="table-cell"><input type="text" id="payed-Id"/></div> -->
+        <div class="table-cell"><select class="drop-down" id="position-id"></select></div>
+<div class="table-cell"><label id="basic-salary-label" ></label></div>         
+<div class="table-cell"><input type="text" id="payed"/></div>
+        <div class="table-cell"><input type="date" id="enroll-date"/></div>
+        <div class="table-cell"><button class="save-btn">Save</button></div>
+    `;
+
+    // Populate the "Position Id" select dropdown with StaffRoll data using EnrollID
+    let selectTag = newRow.querySelector("#position-id");
+    StaffRoll.forEach((s) => {
+        let option = document.createElement("option");
+        option.value = s.EnrollID; // Use EnrollID for value
+        option.innerHTML = s.EnrollID; // Display EnrollID in dropdown
+        selectTag.appendChild(option);
+    });
+
+    // Listen for changes in the Position Id dropdown (EnrollID)
+    selectTag.addEventListener("change", function () {
+        // Get the selected EnrollID
+        const selectedEnrollId = selectTag.value;
+
+        // Find the matching entry in StaffRoll for the selected EnrollID
+        const selectedStaff = StaffRoll.find(staff => staff.EnrollID === selectedEnrollId);
+
+        if (selectedStaff) {
+            // If found, display the corresponding Basic Salary in the label
+            newRow.querySelector("#basic-salary-label").innerHTML = `Salary: ${selectedStaff.salary}`;
+        } else {
+            // If no match, clear the Basic Salary field
+            newRow.querySelector("#basic-salary-label").innerHTML = 'Salary: N/A';
+        }
+    });
+
+    // Append the new row to the table container
+    tableContainer.appendChild(newRow);
+
+    // Attach event listener to save the new row when clicking the Save button
+    newRow.querySelector(".save-btn").addEventListener("click", () => {
+        saveRow(newRow);
+    });
+});
+
+
+        function saveRow(row) {
+            // let payedId = row.querySelector("#payed-Id").value;
+            // console.log(payedId);
+            let position = row.querySelectorAll(".drop-down")[0].value;
+            console.log(position);
+            
+            let basicsalarylabel = row.querySelector("#basic-salary-label").value;
+            console.log(basicsalarylabel);
+
+            let payed = row.querySelector("#payed").value;
+            console.log(payed);
+
+            // let DepartmenId = row.querySelectorAll(".drop-down")[1].value;
+            // console.log(DepartmenId);
+            
+            let enrollDate = row.querySelector("#enroll-date").value;
+            console.log(enrollDate);
+
+            
+           
+            const isMemberEnrolled = salaryPayed.some(program => program.Position === position && program.programID === loadedProgramId);
+    
+    if (isMemberEnrolled) {
+        alert(`Error: Enroller ID ${position} is already enrolled in Program ID ${loadedProgramId}.`);
+        return; // Stop the function from saving the row
+    } 
+
+           
+            const newEnroll = {
+                programID: loadedProgramId,
+                // PayedID: payedId,
+                Position: position,
+                Payed :payed,
+                BasicSalaryLabel:basicsalarylabel,
+                // DepartID: DepartmenId,
+                enrollDate: enrollDate
+               
+            };
+            salaryPayed.push(newEnroll);
+            localStorage.setItem("salaryPayed", JSON.stringify(salaryPayed));
+            window.location.reload();
+        }
+
+        function showTable() {
+            salaryPayed.forEach((enroll) => {
+                if (enroll.programID == loadedProgramId) {
+                    const newRow = document.createElement("div");
+                    newRow.classList.add("table-row");
+                    // ithu normal view ku 
+                    newRow.innerHTML = `
+        <!--<div class="table-cell">
+                <input type="text" id="payed-Id" value="${enroll.PayedID}" readonly/>
+            </div>-->
+
+            <div class="table-cell"> </div>     
+            <div class="table-cell"><label id="basic-salary-label" value = "${enroll.BasicSalaryLabel}"></label></div>         
+
+             <div class="table-cell">
+                <input type="text" id="payed" value="${enroll.Payed}" readonly/>
+            </div>
+           
+            <div class="table-cell">
+                <input type="date" id="enroll-date" value="${enroll.enrollDate}" readonly/>
+            </div>
+
+            <div class="table-cell">
+                <button class="delete-btn">Delete</button>
+            </div>
+            `;
+
+                    let selectTag = document.createElement("select");
+                    selectTag.classList.add("drop-down");
+                    let option = document.createElement("option");
+                    option.value = enroll. Position;
+                    option.setAttribute("readonly", "true");
+                    option.innerHTML = enroll. Position;
+                    selectTag.appendChild(option);
+                    newRow.querySelectorAll(".table-cell")[0].appendChild(selectTag);
+                  
+
+                    
+                   
+                    
+                    tableContainer.appendChild(newRow);
+
+                    newRow
+                        .querySelector(".delete-btn")
+                        .addEventListener("click", () => {
+                            newRow.remove();
+                            deleteRow(newRow);
+                        });
+                }
+            });
+        }
+
+        function deleteRow(row) {
+    let programeId = loadedProgramId;
+    // let payedId = row.querySelector("#payed-Id").value;
+    let position = row.querySelectorAll(".drop-down")[0].value; // Corrected to "position"
+    let payed = row.querySelector("#payed").value;
+    let enrollDate = row.querySelector("#enroll-date").value;
+
+    // Find the index of the matching entry in salaryPayed
+    let index = salaryPayed.findIndex(
+        (e) =>
+            e.programID == programeId && // Ensure the program ID also matches
+            e.Position == position &&
+            e.Payed == payed &&
+            e.enrollDate == enrollDate
+    );
+
+    // If a matching entry is found, remove it from the array
+    if (index != -1) {
+        salaryPayed.splice(index, 1); // Remove the entry from salaryPayed array
+        localStorage.setItem("salaryPayed", JSON.stringify(salaryPayed)); // Update localStorage
+    }
+
+    // Remove the row from the DOM
+    row.remove();
+}
+
+
+
+        // Attach event listener to existing delete button
+        document.querySelectorAll(".delete-btn").forEach((button) => {
+            button.addEventListener("click", (event) => {
+                event.target.closest(".table-row").remove();
+            });
+        });
+
+        
+       
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+    </script>
+</body>
+
+</html>

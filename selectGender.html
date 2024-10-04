@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Gender</title>
+</head>
+<style>
+        body{background-color: rgb(13, 42, 57);}
+
+
+        h1{text-align: center;
+        color: #f8f2f2;}
+      .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .grid-item {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid;
+            padding: 10px;
+            box-shadow: 5px 10px ;
+        }
+        .grid-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+        .grid-item h3 , .grid-item h2{
+            margin: 10px 0;
+            font-size: 1.2em;
+            color: #333;
+            text-align: center;
+        }
+        .grid-item p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .fees-duration {
+            margin: 10px 0;
+            font-weight: bold;
+            color: #007BFF;
+        }
+
+        .grid-item button{background-color:red;
+  border-radius: 10px;
+  padding: 8px 12px;
+  border-color: #f8f2f2;
+  margin-left: 42%;
+  margin-top: 35px;
+  margin-bottom: 5px;
+  width: 100px;
+  }
+
+  .grid-item button:hover{
+    cursor: pointer;
+  }
+  .add{margin:0 47%;
+      border-radius: 12px;
+      padding: 1% 0;
+      width:100px;
+      background-color: rgb(200, 206, 210);
+  
+  }
+  .add:hover{background-color: aliceblue;
+  cursor: pointer;}
+
+    /* Modal styles */
+    .modal {
+       display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(34, 32, 32, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+
+
+    .modal-content {
+        background-color: white;
+        padding: 1px 50px;
+        border-radius: 5px;
+        width: 300px;
+
+
+    }
+
+    .modal-content h2 {
+        color: #0c0000;
+        text-align: center;
+    }
+
+
+
+    .modal-content input {
+        width: 100%;
+        padding: 8px;
+        margin: 10px 0;
+    }
+
+
+
+    .modal-content button {
+        padding: 10px;
+        margin: 10px 0;
+        width: 100%;
+        cursor: pointer;
+    }
+
+
+
+    #imagePreview {
+        width: 100%;
+        height: auto;
+        margin: 10px 0;
+    }
+     
+    button {
+        background-color: red;
+        border-radius: 10px;
+        padding: 5px 12px;
+        border-color: #f8f2f2;
+    }
+</style>
+<body>
+
+    <h1>Select Gender</h1>
+
+    <div id="gritConntent" class="grid-container">
+        <!-- Javascript will create grid dynamically -->
+    </div>
+
+    <br>
+
+    <!-- <button class="add" id="Addbtn">Add</button> -->
+    <div class="modal" id="Conntainner">
+
+        <div class="modal-content">
+            <h2>Add</h2>
+            <input type="text" id="programId" placeholder="Enter programId" required>
+            <input type="text" id="programName" placeholder="Enter programName" required>
+            <input type="text" id="description" placeholder="Enter description" required>
+             <input type="file" id="IMG" required>
+            <img id="Preview" alt="Preview">
+            <button id="SumBtn">Submit</button>
+            <button id="Clobtn">Close</button>
+
+        </div>
+    </div>
+    <br>
+    <br>
+    <button class="add"  style="width: 200px; margin-left:44%; background-color:green;"><a href="./Designiation.html" style="text-decoration: none; color: #f7f2f2;" >Hire Designiation</a>
+
+
+    <script>
+        // Sample data for programs
+        const GenderDepartment = JSON.parse(localStorage.getItem('GenderDepartment')) ||[
+            { programId: "Male001", programName: "Male Department", description: "This section is reserved for male.", image: "./Images/download (3).jpg" },
+            { programId: "Female001", programName: "Female Department", description: "This section is reserved for female.", image: "./Images/download (2).jpg" },
+        ];
+
+        // Dynamically create grid with delete button
+        function populateGrid() {
+            const gritConntent = document.getElementById('gritConntent');
+            gritConntent.innerHTML = ""; // Clear previous content
+
+            GenderDepartment.forEach((p, index) => {
+                const div = document.createElement('div');
+                div.classList.add('grid-item');
+                // div.setAttribute(`onclick`,`window.location.href='StaffRoll.html?programId=${p.programId}'`)
+
+                const JProfile = document.createElement('img');
+                JProfile.src = p.image;
+                JProfile.alt = p.programName;
+
+                const JprogramsName = document.createElement('h2');
+                JprogramsName.textContent = p.programName;
+
+                const JprogramId = document.createElement('h2');
+                JprogramId.textContent = `ID:${p.programId}`;
+                JprogramId.style.color = 'red';
+
+                const Jdescription = document.createElement('h3');
+                Jdescription.textContent = p.description;
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteGridItem(index);
+
+                // Append elements to the div
+                div.appendChild(JProfile);
+                div.appendChild(JprogramsName);
+                div.appendChild(JprogramId);
+                div.appendChild(Jdescription);
+                div.appendChild(deleteButton);
+
+                // Append the div to the grid container
+                gritConntent.appendChild(div);
+            });
+        }
+
+        // Function to delete grid item
+        function deleteGridItem(index) {
+            GenderDepartment.splice(index, 1); // Remove member from array
+            localStorage.setItem('GenderDepartment',JSON.stringify(GenderDepartment));//Remove localstorage
+
+            populateGrid();// Refresh the table
+        }
+
+        // Populate grid on page load
+        populateGrid();
+
+        const add = document.getElementById('Addbtn');
+        const Conntainner = document.getElementById('Conntainner');
+        const IMG = document.getElementById('IMG');
+        const Preview = document.getElementById('Preview');
+        const SumBtnx = document.getElementById('SumBtn');
+        const Clobtn = document.getElementById('Clobtn');
+
+
+
+        add.addEventListener('click', () => {
+            Conntainner.style.display = 'flex';
+        });
+
+        Clobtn.addEventListener('click', () => {
+            Conntainner.style.display = 'none';
+        });
+
+
+        SumBtnx.addEventListener('click',() =>{
+            const newGenderDepartment ={
+                programId:document.getElementById('programId').value,
+                programName:document.getElementById('programName').value,
+                description:document.getElementById('description').value,
+                image:Preview.src
+              
+             }
+             GenderDepartment.push(newGenderDepartment);
+            localStorage.setItem('GenderDepartment',JSON.stringify(GenderDepartment));
+            populateGrid();
+            Conntainner.style.display = 'none';
+
+           document.getElementById('programId').value = '';
+              document.getElementById('programName').value = '';
+               document.getElementById('description').value = '';
+               Preview.src = '';
+                IMG.value = '';
+
+
+        });
+
+        IMG.addEventListener('change',() =>{
+            const file = IMG.files[0];
+            if(file){
+                const reader = new FileReader();
+                reader.onload = function(e){
+                    Preview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+
+    </script>
+
+</body>
+
+</html>

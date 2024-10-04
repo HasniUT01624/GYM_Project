@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Condition</title>
+</head>
+<style>
+        body{background-color: rgb(13, 42, 57);}
+
+h1{color: aliceblue;
+text-align: center;}
+
+.search{
+           margin: 0 40%;
+           padding-left:  1%;
+           padding-right: 10%;
+           height: 50px;
+           border-radius: 12px;
+         }  
+ .search:hover{cursor: pointer;}
+
+.grid-container {
+     display: grid;
+     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+     gap: 20px;
+     padding: 20px;
+ }
+ .grid-item {
+     background-color: white;
+     border: 1px solid #ddd;
+     border-radius: 10px;
+     overflow: hidden;
+     border: 1px solid;
+     padding: 10px;
+     box-shadow: 5px 10px ;
+ }
+ .grid-item img {
+     width: 100%;
+     height: 250px;
+     object-fit: cover;
+ }
+ .grid-item h3 , .grid-item h2{
+     margin: 10px 0;
+     font-size: 1.2em;
+     color: #333;
+     text-align: center;
+ }
+ .grid-item p {
+     margin: 5px 0;
+     color: #666;
+ }
+
+
+ .grid-item button{background-color:red;
+border-radius: 10px;
+padding: 8px 12px;
+border-color: #f8f2f2;
+margin-left: 32%;
+margin-top: 35px;
+margin-bottom: 5px;
+width: 100px;
+}
+
+.grid-item button:hover{
+cursor: pointer;
+}
+.add{margin:0 47%;
+border-radius: 12px;
+padding: 1% 0;
+width:100px;
+background-color: rgb(200, 206, 210);
+
+}
+.add:hover{background-color: aliceblue;
+cursor: pointer;}
+
+
+ .grid-item button:hover{
+   cursor: pointer;
+ }
+
+ .add{margin:0 42%;
+     border-radius: 12px;
+     padding: 1% 0;
+     width:200px;
+     background-color: rgb(200, 206, 210);
+ 
+ }
+ .add:hover{background-color: aliceblue;
+ cursor: pointer;}
+
+ /* Modal styles */
+ .modal {
+       display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(34, 32, 32, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+
+
+    .modal-content {
+        background-color: white;
+        padding: 1px 50px;
+        border-radius: 5px;
+        width: 300px;
+
+
+    }
+
+    .modal-content h2 {
+        color: #0c0000;
+        text-align: center;
+    }
+
+
+
+    .modal-content input {
+        width: 100%;
+        padding: 8px;
+        margin: 10px 0;
+    }
+
+
+
+    .modal-content button {
+        padding: 10px;
+        margin: 10px 0;
+        width: 100%;
+        cursor: pointer;
+    }
+
+
+
+    #imagePreview {
+        width: 100%;
+        height: auto;
+        margin: 10px 0;
+    }
+     
+    button {
+        background-color: red;
+        border-radius: 10px;
+        padding: 5px 12px;
+        border-color: #f8f2f2;
+    }
+</style>
+<body>
+    <h1>Medical Condition</h1>
+   
+
+    <input type="text" id="SerchId" class="search" placeholder="Search Medical Condition" onkeyup="SearchID()">
+    
+    <div id="gritConntainer" class="grid-container">
+        <!-- javascript wiil be dinamicaly create grid -->
+    </div>
+    <br>
+    <button class="add" id="Addbtn">Add Medical Condition</button>
+    <div class="modal" id="Conntainner">
+
+        <div class="modal-content">
+            <h2>Add  Medical Condition</h2>
+            <input type="text" id="MCID" placeholder="Enter Id" required>
+            <input type="text" id="Name" placeholder="Enter  Medical Condition Name" required> 
+            <input type="text" id="discription" placeholder="Enter  discription" required> 
+             <input type="file" id="IMG" required>
+            <img id="Preview" alt="Preview">
+            <button id="SumBtn">Submit</button>
+            <button id="Clobtn">Close</button>
+
+        </div>
+    </div>
+    <br>
+    <br>
+    <button class="add"  style="width: 200px; margin-left:42%; background-color:green; height:47px;"><a href="./Programs.html" style="text-decoration: none; color: #f7f2f2;" >Select Program</a>
+
+
+
+    <script>
+        const MConditions = JSON.parse(localStorage.getItem('MCData')) ||
+        [{MedicalID: 'MC001', Name: 'Arthritis', discription: 'Exercise can ease pain, build muscle strength around joints and lessen joint stiffness. It also can help people with arthritis move better and improve quality of life.',image:'./Images/MC1.jpg' },
+        {MedicalID :'MC002',Name:'Asthma',discription:'Often, exercise can help control how often asthma attacks happen and how bad they are.',image:'./Images/MC2.jpg'},
+        {MedicalID :'MC003',Name:'Back pain',discription:'Low-impact aerobic exercise is regular exercise that raises heart rate without putting stress on the body. It can build back strength and make muscles work better.',image:'./Images/MC3.jpg'},
+        {MedicalID :'MC004',Name:'Heart disease',discription:'Regular exercise helps the heart. Exercise can lower the risk of dying of heart disease. And it can lowerthe risk of heart disease getting worse.',image:'./Images/MC4.jpg'},
+        {MedicalID :'MC005',Name:'Diabetes',discription:'Regular exercise can help lower blood sugar levels. Exercise also can help control weight and boost energy.',image:'./Images/MC5.jpg'},
+        ];
+
+        function populateGrid(filter = MConditions){
+         const gritContent = document.getElementById('gritConntainer');
+         gritContent.innerHTML = '';
+
+
+         filter.forEach((MC,index) =>{
+            const div = document.createElement('div');
+            div.classList.add('grid-item');
+
+            const onclick = document.createElement('button')
+            onclick.textContent = 'click me';
+            div.appendChild(onclick);
+            onclick.setAttribute(`onclick`,`window.location.href='MemberCondition.html?programId=${MC.MedicalID}'`); 
+
+
+            const img = document.createElement('img');
+            img.src = MC.image;
+            img.alt = 'image';
+            div.appendChild(img);
+
+            const ID = document.createElement('h2');
+            ID.textContent = MC.MedicalID;
+            ID.style.color = 'red';
+            div.appendChild(ID);
+
+            const nameMC = document.createElement('h2');
+            nameMC.textContent = MC.Name;
+            div.appendChild(nameMC);
+
+            const box = document.createElement('div');
+            box.style.overflow = 'hidden';
+            box.style.height = '100px'
+
+            const discrip = document.createElement('p');
+            discrip.textContent = MC.discription;
+            discrip.style.fontFamily = 'Times New Roman';
+            div.appendChild(box);
+            box.appendChild(discrip)
+
+            const deletebtn = document.createElement('button');
+            deletebtn.textContent = 'Delete';
+            deletebtn.onclick = () => deletebt(index);
+            div.appendChild(deletebtn);
+
+            const editbtn = document.createElement('Button');
+            editbtn.textContent = "Edit";
+            editbtn.style.backgroundColor = "green";
+            editbtn.style.color = "white";
+            editbtn.onclick = () => editGridItem(index);
+            div.appendChild(editbtn);
+
+            gritContent.appendChild(div);
+         });
+
+        }
+        function deletebt(index) {
+            MConditions.splice(index, 1); // Remove member from array
+            localStorage.setItem('MCData',JSON.stringify(MConditions));
+
+            populateGrid();// Refresh the table
+        }
+
+        function editGridItem(index) {
+            const selectedMC = MConditions[index];
+    // Show the modal
+    // Conntainner.style.display = 'flex';
+    
+    // Pre-fill the modal form with the current values of the selected medical condition
+   
+    document.getElementById('MCID').value = selectedMC.MedicalID;
+    document.getElementById('Name').value = selectedMC.Name;
+    document.getElementById('discription').value = selectedMC.discription;
+    Preview.src = selectedMC.image;
+
+    document.getElementById('Conntainner').style.display = 'flex';
+
+
+    // Change the Submit button functionality to update the existing item
+    // SumBtnx.textContent = 'Update';  // Change the button text to "Update"
+    
+    // Remove the previous event listener to avoid duplicates
+    // SumBtnx.replaceWith(SumBtnx.cloneNode(true));
+    
+    // Add a new event listener for updating the item
+    // SumBtnx = document.getElementById('SumBtn');
+    document.getElementById('SumBtn').onclick = () => {
+        // Update the existing medical condition
+        selectedMC.MedicalID = document.getElementById('MCID').value;
+        selectedMC.Name = document.getElementById('Name').value;
+        selectedMC.discription = document.getElementById('discription').value;
+        selectedMC.image = Preview.src;
+
+        // Save the updated data to localStorage
+        localStorage.setItem('MCData', JSON.stringify(MConditions));
+        
+        // Refresh the grid to show updated data
+        populateGrid();
+
+        // Close the modal
+        document.getElementById('Conntainner').style.display = 'none';
+
+        // Conntainner.style.display = 'none';
+
+        // Reset the form fields
+        document.getElementById('MCID').value = '';
+        document.getElementById('Name').value = '';
+        document.getElementById('discription').value = '';
+        Preview.src = '';
+        IMG.value = '';
+
+        // Reset the button text back to "Submit" after editing
+        // SumBtnx.textContent = 'Submit';
+    };
+}
+
+
+        function SearchID(){
+            const search = document.getElementById('SerchId').value.toUpperCase();
+            const filter = MConditions.filter(MC =>MC.Name.includes(search));
+            populateGrid(filter);
+        }
+
+        populateGrid();
+
+        const add = document.getElementById('Addbtn');
+        const Conntainner = document.getElementById('Conntainner');
+        const IMG = document.getElementById('IMG');
+        const Preview = document.getElementById('Preview');
+        const SumBtnx = document.getElementById('SumBtn');
+        const Clobtn = document.getElementById('Clobtn');
+
+
+
+        add.addEventListener('click', () => {
+            Conntainner.style.display = 'flex';
+        });
+
+        Clobtn.addEventListener('click', () => {
+            Conntainner.style.display = 'none';
+        });
+
+
+        SumBtnx.addEventListener('click',() =>{
+        
+                const MedicalID =document.getElementById('MCID').value.trim();
+                const  Name = document.getElementById('Name').value.trim();
+                const discription = document.getElementById('discription').value.trim();
+                const image = Preview.src
+              
+              
+                const newMC = {
+                    MedicalID : MedicalID,
+                    Name:Name,
+                    discription:discription,
+                    image:image
+                }
+
+                if(MedicalID === '' || Name === '' || image === ''){
+                    alert('All fields are required.');
+                    return; 
+                }
+          
+             MConditions.push(newMC);
+            localStorage.setItem('MCData',JSON.stringify(MConditions));
+            populateGrid();
+            Conntainner.style.display = 'none';
+
+           document.getElementById('MCID').value = '';
+              document.getElementById('Name').value = '';
+              document.getElementById('discription').value = '';
+               Preview.src = '';
+                IMG.value = '';
+
+
+        });
+
+        IMG.addEventListener('change',() =>{
+            const file = IMG.files[0];
+            if(file){
+                const reader = new FileReader();
+                reader.onload = function(e){
+                    Preview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+    </script>
+</body>
+</html>
+
+
+
+ 
+
+

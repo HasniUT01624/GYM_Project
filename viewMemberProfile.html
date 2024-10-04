@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Fees Paid Report</title>
+</head>
+<style>
+    body {
+        background-color: rgb(13, 42, 57);
+    }
+
+    h1 {
+        color: #f8f2f2;
+        margin-left: 40%;
+    }
+
+    .search {
+        margin: 0 43%;
+        padding-left: 1%;
+        padding-right: 10%;
+        height: 50px;
+        border-radius: 12px;
+        position: relative;
+    }
+
+    .search:hover {
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: white;
+        padding: 10px;
+        box-shadow: 5px 10px;
+        border-radius: 12px;
+        display: none; /* Initially hidden */
+    }
+
+    table, th, td {
+        border: 1px solid #0c0000;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align:center;
+    }
+
+    th {
+        background-color: rgb(200, 206, 210);
+    }
+
+    tr:nth-child(even) {
+        background-color: rgb(200, 206, 210);
+    }
+
+    tr:hover {
+        background-color: rgb(200, 206, 210);
+        cursor: pointer;
+    }
+</style>
+<body>
+    <h1>Member Fees Paid Report</h1>
+    
+    <!-- Search input and button -->
+    <input type="text" id="searchInput" class="search" placeholder=" Member ID / Name"  />
+    <button id="searchButton" style="position: absolute; margin-top:-46px; padding: 12px; border-radius: 12px; margin-left: 65%; background-color: rgb(164, 162, 162);">Search</button>
+    
+    <table id="feesReportTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Member ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Department</th>
+                <th>Program Name</th>
+                <th>Fees</th>
+                <th>Enroll Date</th>
+                <th>Date of Birth</th>
+                <th>Address 1</th>
+                <th>Address 2</th>
+                <th>Phone No 1</th>
+                <th>Phone No 2</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be dynamically inserted here -->
+        </tbody>
+    </table>
+
+<script>
+    const Fees = JSON.parse(localStorage.getItem('FeesPayment')) || [
+        { Id: "Y24M10M", date: "2024.OCT" },
+        { Id: "Y24M11M", date: "2024.NOV" },
+        { Id: "Y24M12M", date: "2024.DES" }
+    ];
+
+    const FeesPayed = JSON.parse(localStorage.getItem("FeesPayed")) || [
+        { programID: "Y24M11M", Position: "022", Payed: "5866", enrollDate: "2024-11-20" }
+    ];
+
+    const programs = JSON.parse(localStorage.getItem('programData')) || [
+        { programId: "P001", programName: "Weight Training", fees: "1000" }
+    ];
+
+    const enrollPrograms = JSON.parse(localStorage.getItem("enrollPrograms")) || [
+        { programID: "P003", EntrolledID: "055", memberID: "M004", salary: "58220", DepartID: "Male001" }
+    ];
+
+    const members = JSON.parse(localStorage.getItem('Members')) || [
+        { id: "M001", firstName: "John", lastName: "Doe", dateOfBirth: "1990-05-15", Address1: "Oluvil", Address2: "Jaffna", Phoneno1: "0752879546", Phoneno2: "0758963215", Email: "hasni@gmail.com" },
+        { id: "M002", firstName: "Jane", lastName: "Smith", dateOfBirth: "1985-08-22", Address1: "Oluvil", Address2: "Jaffna", Phoneno1: "0752879546", Phoneno2: "0758963215", Email: "hasni@gmail.com" }
+    ];
+
+    // Function to render the Fees Paid Report
+    function renderFeesReport(filteredData = enrollPrograms) {
+        const tableBody = document.querySelector("#feesReportTable tbody");
+        tableBody.innerHTML = ""; // Clear the table before populating
+
+        filteredData.forEach(enroll => {
+            const member = members.find(m => m.id === enroll.memberID) || {};
+            const program = programs.find(p => p.programId === enroll.programID) || {};
+            const feePaid = FeesPayed.find(f => f.programID === enroll.programID) || {};
+
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${enroll.programID}</td>
+                <td>${member.id || "N/A"}</td>
+                <td>${member.firstName || "N/A"}</td>
+                <td>${member.lastName || "N/A"}</td>
+                <td>${enroll.DepartID || "N/A"}</td>
+                <td>${program.programName || "N/A"}</td>
+                <td>${enroll.salary || "N/A"}</td>
+                <td>${feePaid.enrollDate || "N/A"}</td>
+                <td>${member.dateOfBirth || "N/A"}</td>
+                <td>${member.Address1 || "N/A"}</td>
+                <td>${member.Address2 || "N/A"}</td>
+                <td>${member.Phoneno1 || "N/A"}</td>
+                <td>${member.Phoneno2 || "N/A"}</td>
+                <td>${member.Email || "N/A"}</td>
+            `;
+
+            tableBody.appendChild(row);
+        });
+    }
+
+    function filterTable() {
+        const searchInput = document.getElementById("searchInput").value.trim().toLowerCase();
+        const table = document.getElementById("feesReportTable");
+
+        if (searchInput) {
+            // Filter enrollments by memberID
+            const filteredEnrollmentsById = enrollPrograms.filter(enrollment => 
+                enrollment.memberID.toLowerCase().includes(searchInput)
+            );
+
+            // Filter members by firstName, and get corresponding enrollments
+            const filteredEnrollmentsByName = enrollPrograms.filter(enrollment => {
+                const member = members.find(m => m.id === enrollment.memberID);
+                return member && member.firstName.toLowerCase().includes(searchInput);
+            });
+
+            // Merge both filtered arrays (remove duplicates if any)
+            const combinedFilteredEnrollments = [
+                ...new Set([...filteredEnrollmentsById, ...filteredEnrollmentsByName])
+            ];
+
+            // Render the filtered data
+            renderFeesReport(combinedFilteredEnrollments);
+            
+            // Show the table if there's data to display
+            table.style.display = combinedFilteredEnrollments.length > 0 ? "table" : "none";
+        } else {
+            // Hide the table if no search input
+            table.style.display = "none";
+        }
+    }
+
+    // Event listener for the search button
+    document.getElementById("searchButton").addEventListener("click", filterTable);
+
+    // Initial table state (hidden)
+    document.getElementById("feesReportTable").style.display = "none";
+</script>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <img src="./images/Logo.jpg" width="75px" height="75px" style="border-radius: 100%;">
+            <h1 id="banner">Focus Fitness</h1>
+            <ul>
+                <li>About us</li>
+                <li>Contect Us</li>
+                <li>Gallery</li>
+            </ul>
+
+            <a class="login">Login</a>
+        </nav>
+    </header>
+
+    <div class="bannerImg" style="margin-top:0px;"> </div>
+
+    <div class="login-container" style="margin-top:-70px;">
+
+        <form id="loginForm" onsubmit="return validateLogin()">
+            <label>
+                <h1>Login</h1>
+            </label>
+            <label for="username"> <span style="color: red;">*</span>Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password"> <span style="color: red;">*</span>User Id:</label>
+            <input type="password" id="password" name="password" required>
+            <span> Show User Id</span> <input type="checkbox" id="showPassword" style=" width:10%;display:flex;">
+
+            <button type="submit">Login</button>
+            <p id="errorMessage" class="error-message"></p>
+        </form>
+
+    </div>
+
+
+
+    <footer>
+        <p style="text-align: center;">Push yourself, because no one else is going to do it for you.
+            <br><br><a href="#" style="color: aliceblue;">Contect us : +94 758496248</a>
+        </p>
+    </footer>
+    <script >
+        const validUsername = "Admin";
+const validPassword = "12345"; // Corrected the typo in the password
+
+function validateLogin() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorMessage = document.getElementById('errorMessage');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+
+    // Remove previous error styles
+    usernameInput.classList.remove('error-border');
+    passwordInput.classList.remove('error-border');
+    errorMessage.textContent = '';
+
+    if (username === validUsername && password === validPassword) {
+        window.location.href = "Admin.html"; // Redirect to a welcome page
+        return false; // Prevent form submission
+    } else {
+        errorMessage.textContent = "Invalid Username or Password!";
+        if (username !== validUsername) {
+            usernameInput.classList.add('error-border');
+        }
+        if (password !== validPassword) {
+            passwordInput.classList.add('error-border');
+        }
+        return false; // Prevent form submission
+    }
+}
+
+document.getElementById('showPassword').addEventListener('change', function () {
+    const passwordField = document.getElementById('password');
+    if (this.checked) {
+        passwordField.type = 'text'; // Show password
+    } else {
+        passwordField.type = 'password'; // Hide password
+    }
+});
+    </script>
+
+</body>
+
+</html>

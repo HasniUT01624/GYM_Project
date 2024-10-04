@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Staff Roll</title>
+    <style>
+        /* Basic page styling */
+        body {
+            font-family: "Arial", sans-serif;
+            padding: 20px;
+          
+        background-color: rgb(13, 42, 57);
+    }        
+
+        h2 {
+            text-align: center;
+            color: #f8f2f2;
+        }
+
+        /* Table container styling */
+        #table-container {
+            width: 80%;
+            margin: 20px auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            overflow: hidden;
+        }
+
+        /* Table row styling */
+        .table-header,
+        .table-row {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table-header {
+            background-color: #eee;
+            font-weight: bold;
+        }
+
+        .table-cell {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-right: 1px solid #ddd;
+        }
+
+        .table-cell:last-child {
+            border-right: none;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Button styling */
+        /* button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        } */
+
+        button {
+        background-color: red;
+        border-radius: 10px;
+        padding: 5px 12px;
+        border-color: #f8f2f2;
+    }
+
+        .add-btn {
+            display: block;
+            margin: 20px auto;
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .delete-btn,
+        .save-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .save-btn {
+            background-color: #28d42d;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body>
+    <h2 id="program-title"></h2>
+
+    <div id="table-container">
+        <div class="table-header">
+            <div class="table-cell">Position Id</div>
+            <div class="table-cell">Staff Id</div>
+            <div class="table-cell">DepartID</div>
+            <div class="table-cell">salery</div>
+            <div class="table-cell">Appointment Date</div>
+            <div class="table-cell">Actions</div>
+        </div>
+
+        <div class="table-row">
+            <!-- javascript -->
+        </div>
+    </div>
+
+    <button id="add-row-btn" class="add-btn">Add Row</button>
+    <button class="add"  style="width: 200px; margin-left:44%; background-color:green; height:47px;"><a href="./Admin.html" style="text-decoration: none; color: #f7f2f2;" >Go Admin Page</a>
+
+
+    <script>
+
+
+        const Staff = JSON.parse(localStorage.getItem('StaffData')) || [];
+        const Department = JSON.parse(localStorage.getItem('GenderDepartment')) ||[];
+         const Roll = JSON.parse(localStorage.getItem('DesigniationsData')) ||[];
+        const StaffRoll = JSON.parse(localStorage.getItem("StaffRoll")) || [];
+
+
+
+        const title = document.getElementById("program-title");
+        const addRowBtn = document.getElementById("add-row-btn");
+        const tableContainer = document.getElementById("table-container");
+
+
+
+
+        // this is load for url
+        const loadedProgramId = getQueryParam("programId");
+        const loadedProgram = Roll.find(
+            (p) => p.Id == loadedProgramId
+        );
+
+        title.innerHTML = loadedProgram.PositionName;
+        showTable();
+
+        console.log(loadedProgramId);
+
+        // Add event listener to add a new row
+        addRowBtn.addEventListener("click", () => {
+            const newRow = document.createElement("div");
+            newRow.classList.add("table-row");
+            // ithu add row  view ku
+            newRow.innerHTML = `
+
+           <div class="table-cell">
+                <input type="text" id="enroll-Id"/>
+            </div> 
+
+            <div class="table-cell"></div>
+
+             <div class="table-cell"></div>
+             
+              <div class="table-cell">
+                  <input type="text" id="salary-input" placeholder="Enter Salary"/>
+                </div>
+
+             <div class="table-cell">
+                <input type="date" id="enroll-date"/>
+            </div>
+           
+            <div class="table-cell">
+                <button class="save-btn">Save</button>
+            </div>
+            `;
+            // Create and append the "Member Id" select dropdown in the first table cell
+            let selectTag = document.createElement("select");
+            selectTag.classList.add("drop-down");
+
+            Staff.forEach((s) => {
+                let option = document.createElement("option");
+                option.value = s.id;
+                option.innerHTML = s.id;
+                selectTag.appendChild(option);
+            });
+            newRow.querySelectorAll(".table-cell")[1].appendChild(selectTag);
+
+            let selectTag1 = document.createElement("select");
+            selectTag1.classList.add("drop-down");
+
+            Department.forEach((D) => {
+                let option = document.createElement("option");
+                option.value = D.programId;
+                option.innerHTML = D.programId;
+                selectTag1.appendChild(option);
+            });
+            newRow.querySelectorAll(".table-cell")[2].appendChild(selectTag1);
+
+
+           
+            // Append the new row to the table container
+            tableContainer.appendChild(newRow);
+            // Attach event listener to the new delete button
+            newRow.querySelector(".save-btn").addEventListener("click", () => {
+                //newRow.remove();
+                saveRow(newRow);
+            });
+        });
+
+        function saveRow(row) {
+            let enrollId = row.querySelector("#enroll-Id").value;
+            console.log(enrollId);
+
+            let StaffId = row.querySelectorAll(".drop-down")[0].value;
+            console.log(StaffId);
+
+            let DepartmenId = row.querySelectorAll(".drop-down")[1].value;
+            console.log(DepartmenId);
+
+            let Salary = row.querySelector("#salary-input").value;
+            console.log(Salary);
+            
+            let enrollDate = row.querySelector("#enroll-date").value;
+            console.log(enrollDate);
+           
+            
+            const isMemberEnrolled = StaffRoll.some(program => program.StaffID === StaffId && program.programID === loadedProgramId);
+    
+    if (isMemberEnrolled) {
+        alert(`Error: Position ID ${StaffId} is already enrolled in Program ID ${loadedProgramId}.`);
+        return; // Stop the function from saving the row
+    }
+           
+            const newEnroll = {
+                programID: loadedProgramId,
+                EnrollID: enrollId,
+                StaffID: StaffId,
+                salary:Salary,
+                DepartID: DepartmenId,
+                enrollDate: enrollDate
+               
+            };
+            StaffRoll.push(newEnroll);
+            localStorage.setItem("StaffRoll", JSON.stringify(StaffRoll));
+            window.location.reload();
+        }
+
+        function showTable() {
+            StaffRoll.forEach((enroll) => {
+                if (enroll.programID == loadedProgramId) {
+                    const newRow = document.createElement("div");
+                    newRow.classList.add("table-row");
+                    // ithu normal view ku 
+                    newRow.innerHTML = `
+        <div class="table-cell">
+                <input type="text" id="enroll-Id" value="${enroll.EnrollID}" readonly/>
+            </div>
+
+            <div class="table-cell"> </div>     
+             <div class="table-cell"> </div>
+               <div class="table-cell">
+                  <input type="text" id="salary-input" placeholder="Enter Salary" value="${enroll.salary}" readonly/>
+                </div>
+           
+            <div class="table-cell">
+                <input type="date" id="enroll-date" value="${enroll.enrollDate}" readonly/>
+            </div>
+
+            <div class="table-cell">
+                <button class="delete-btn">Delete</button>
+            </div>
+            `;
+
+                    let selectTag = document.createElement("select");
+                    selectTag.classList.add("drop-down");
+                    let option = document.createElement("option");
+                    option.value = enroll. StaffID;
+                    option.setAttribute("readonly", "true");
+                    option.innerHTML = enroll. StaffID;
+                    selectTag.appendChild(option);
+                    newRow.querySelectorAll(".table-cell")[1].appendChild(selectTag);
+                  
+
+                    
+                    let selectTag1 = document.createElement("select");
+                    selectTag1.classList.add("drop-down");
+                    let option1 = document.createElement("option");
+                    option1.value = enroll.DepartID;
+                    option1.setAttribute("readonly", "true");
+                    option1.innerHTML = enroll.DepartID;
+                    selectTag1.appendChild(option1);
+                    newRow.querySelectorAll(".table-cell")[2].appendChild(selectTag1);
+                     
+
+
+               
+                    
+
+                    tableContainer.appendChild(newRow);
+
+                    newRow
+                        .querySelector(".delete-btn")
+                        .addEventListener("click", () => {
+                            newRow.remove();
+                            deleteRow(newRow);
+                        });
+                }
+            });
+        }
+
+        function deleteRow(row) {
+            let programeId = loadedProgramId;
+            let enrollId = row.querySelector("#enroll-Id").value;
+            let  StaffId = row.querySelectorAll(".drop-down")[0].value;
+            let DepartmenId = row.querySelectorAll(".drop-down")[1].value;
+            let salary = row.querySelector("input#salary-input").value;
+            let enrollDate = row.querySelector("#enroll-date").value;
+            
+ 
+
+            let index = StaffRoll.findIndex(
+                (e) =>
+                    
+                    // e.programID == programeId &&
+                    e.EnrollID == enrollId &&
+                    e. StaffID ==  StaffId &&
+                     e.salary == salary &&
+                    e.DepartID == DepartmenId &&
+                    e.enrollDate == enrollDate  
+                     
+            );
+            if (index != -1) {
+                StaffRoll.splice(index, 1);
+            }
+            localStorage.setItem("StaffRoll", JSON.stringify(StaffRoll));
+            window.location.reload();
+        }
+        // Attach event listener to existing delete button
+        document.querySelectorAll(".delete-btn").forEach((button) => {
+            button.addEventListener("click", (event) => {
+                event.target.closest(".table-row").remove();
+            });
+        });
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+    </script>
+</body>
+
+</html>

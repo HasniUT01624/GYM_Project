@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members</title>
+</head>
+
+<style>
+    body {
+        background-color: rgb(13, 42, 57);
+    }
+
+    h1 {
+        color: #f8f2f2;
+        /* text-align: center; */
+        margin: 1% 50%;
+    }
+
+    .search {
+        margin: 0 45%;
+        padding-left: 1%;
+        padding-right: 10%;
+        height: 50px;
+        border-radius: 12px;
+    }
+
+    .search:hover {
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: white;
+        padding: 10px;
+        box-shadow: 5px 10px;
+        border-radius: 12px;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid #0c0000;
+
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align: left;
+    }
+
+    th {
+        background-color: rgb(200, 206, 210);
+        text-align: center;
+    }
+
+    tr:nth-child(even) {
+        background-color: rgb(200, 206, 210);
+    }
+
+    tr:hover {
+        background-color: rgb(200, 206, 210);
+        cursor: pointer;
+    }
+
+    img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+
+    .add {
+        margin: 0 50%;
+        border-radius: 12px;
+        padding: 1% 0;
+        width: 100px;
+        background-color: rgb(200, 206, 210);
+
+    }
+
+    .add:hover {
+        background-color: aliceblue;
+        cursor: pointer;
+    }
+
+    button {
+        background-color: red;
+        border-radius: 10px;
+        padding: 5px 12px;
+        border-color: #f8f2f2;
+    }
+
+    /* Modal styles */
+    .modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(34, 32, 32, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        
+
+        .modal-content {
+            background-color: white;
+            padding: 1px 50px;
+            border-radius: 5px;
+            width: 300px;
+
+
+        }
+        
+        .modal-content h2 {
+            color: #0c0000;
+            text-align: center;
+        }
+
+       
+
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+
+        
+
+        .modal-content button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        
+
+        #imagePreview {
+            width: 100%;
+            height: auto;
+            margin: 10px 0;
+        }
+
+ 
+</style>
+
+<body>
+
+    <h1>Members</h1>
+
+    <input type="text" id="searchId" class="search" placeholder="Enter Member ID" onkeyup="searchMember()">
+    <br>
+
+    <table id="TableContant" border="">
+        <thead>
+            <tr>
+                <th>MemberID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Date of Birth</th>
+                <th>Address 1</th>
+                <th>Address 2</th>
+                <th>Phone no 1</th>
+                <th>Phone no 2</th>
+                <th>E-mail</th>
+                <th>Profile</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Javascript Will Create Table Dynamically -->
+        </tbody>
+    </table>
+    <br>
+    <button class="add" id="Add">Add Members</button>
+
+    <div class="modal" id="Conntainner">
+        
+        <div class="modal-content">
+            <h2>Add Members</h2>
+            <input type="text" id="MemberID" placeholder="Enter Member Id" required>
+            <input type="text" id="First Name" placeholder="Enter Member First Name" required>
+            <input type="text" id="Last Name" placeholder="Enter Member Last Name" required>
+            <input type="date" id="Date of Birth" required>
+            <input type="text" id="Address 1" placeholder="Enter Member Address 1" required>
+            <input type="text" id="Address 2" placeholder="Enter Member Address 2" required>
+            <input type="tel" id="Phone no 1" placeholder="Enter Member Phone no 1" required>
+            <input type="tel" id="Phone no 2" placeholder="Enter Member Phone no 2" required>
+            <input type="email" id="Email" placeholder="Enter Member E-mail" required>
+            <input type="file" id="IMG" required>
+            <img id="Preview" alt="Preview">
+            <button id="SumBtn">Submit</button>
+            <button id="Clobtn">Close</button>
+
+        </div>
+    </div>
+    <br><br>
+    <button class="add"  style="width: 200px; margin-left:47%; background-color:green;"><a href="./medicalConndition.html" style="text-decoration: none; color: #f7f2f2;" >Member Medical Condition</a>
+    </button>
+
+
+
+    <script>
+        // Sample Members Data
+        const members = JSON.parse(localStorage.getItem('Members')) || [
+            { id: "M001", firstName: "John", lastName: "Doe", dateOfBirth: "1990-05-15", Address1: "Oluvil", Address2: "Jaffna", Phoneno1: "0752879546", Phoneno2: "0758963215", Email: "hasni@gmail.com", image: "./Images/member1.jpg" },
+            { id: "M002", firstName: "Jane", lastName: "Smith", dateOfBirth: "1985-08-22", Address1: "Oluvil", Address2: "Jaffna", Phoneno1: "0752879546", Phoneno2: "0758963215", Email: "hasni@gmail.com", image: "./Images/member2.jpg" },
+            { id: "M003", firstName: "Michael", lastName: "Johnson", dateOfBirth: "1992-11-30", Address1: "Oluvil", Address2: "Jaffna", Phoneno1: "0752879546", Phoneno2: "0758963215", Email: "hasni@gmail.com", image: "./Images/member3.jpg" },
+            { id: "M004", firstName: "Emily", lastName: "Williams", dateOfBirth: "1995-04-10", Address1: "Oluvil", Address2: "Jaffna", Phoneno1: "0752879546", Phoneno2: "0758963215", Email: "hasni@gmail.com", image: "./Images/member4.jpg" },
+            { id: "M005", firstName: "Nelson", lastName: "Mandella", dateOfBirth: "1965-04-17", Address1: "Oluvil", Address2: "Jaffna", Phoneno1: "0752879546", Phoneno2: "0758963215", Email: "hasni@gmail.com", image: "./Images/member5.jpg" }
+        ];
+
+
+        // Dynamically Create Table
+function populateTable(filteredMembers = members) {
+    const TableContent = document.querySelector('#TableContant tbody');
+    TableContent.innerHTML = "";
+
+    filteredMembers.forEach((m, index) => {
+        const Row = document.createElement('tr');
+
+        const JMemberID = document.createElement('td');
+        JMemberID.textContent = m.id;
+
+        const JFirstName = document.createElement('td');
+        JFirstName.textContent = m.firstName;
+
+        const JLastName = document.createElement('td');
+        JLastName.textContent = m.lastName;
+
+        const JDathofBirth = document.createElement('td');
+        JDathofBirth.textContent = m.dateOfBirth;
+
+        const JAddress1 = document.createElement('td');
+        JAddress1.textContent = m.Address1;
+
+        const JAddress2 = document.createElement('td');
+        JAddress2.textContent = m.Address2;
+
+        const JPhoneno1 = document.createElement('td');
+        JPhoneno1.textContent = m.Phoneno1;
+
+        const JPhoneno2 = document.createElement('td');
+        JPhoneno2.textContent = m.Phoneno2;
+
+        const JEmail = document.createElement('td');
+        JEmail.textContent = m.Email;
+
+        const JProfile = document.createElement('td');
+        const img = document.createElement('img');
+        img.src = m.image;
+        img.alt = `${m.firstName}'s Profile`;
+        img.width = 50;
+        JProfile.appendChild(img);
+
+        const JAction = document.createElement('td');
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = "Delete";
+        deleteBtn.onclick = () => deleteRow(index); // Delete function
+        JAction.appendChild(deleteBtn);
+
+        const EditBtn = document.createElement('button');
+        EditBtn.textContent = "Edit";
+        EditBtn.style.backgroundColor = 'Green';
+        EditBtn.style.color = 'white';
+        EditBtn.onclick = () => editRow(index); // Edit function
+        JAction.appendChild(EditBtn);
+
+        Row.appendChild(JMemberID);
+        Row.appendChild(JFirstName);
+        Row.appendChild(JLastName);
+        Row.appendChild(JDathofBirth);
+        Row.appendChild(JAddress1);
+        Row.appendChild(JAddress2);
+        Row.appendChild(JPhoneno1);
+        Row.appendChild(JPhoneno2);
+        Row.appendChild(JEmail);
+        Row.appendChild(JProfile);
+        Row.appendChild(JAction);
+
+        TableContent.appendChild(Row);
+    });
+}
+
+function deleteRow(index) {
+        members.splice(index, 1);
+        localStorage.setItem('Members', JSON.stringify(members));
+        populateTable();
+    }
+// Edit function
+function editRow(index) {
+    const member = members[index];
+
+    // Pre-fill the form with the member's current data
+    document.getElementById('MemberID').value = member.id;
+    document.getElementById('First Name').value = member.firstName;
+    document.getElementById('Last Name').value = member.lastName;
+    document.getElementById('Date of Birth').value = member.dateOfBirth;
+    document.getElementById('Address 1').value = member.Address1;
+    document.getElementById('Address 2').value = member.Address2;
+    document.getElementById('Phone no 1').value = member.Phoneno1;
+    document.getElementById('Phone no 2').value = member.Phoneno2;
+    document.getElementById('Email').value = member.Email;
+    document.getElementById('Preview').src = member.image;
+
+    // Show the modal
+    document.getElementById('Conntainner').style.display = 'flex';
+
+    // Update the submit button to save the edits
+    document.getElementById('SumBtn').onclick = () => {
+        // Update the member in the array
+        member.id = document.getElementById('MemberID').value;
+        member.firstName = document.getElementById('First Name').value;
+        member.lastName = document.getElementById('Last Name').value;
+        member.dateOfBirth = document.getElementById('Date of Birth').value;
+        member.Address1 = document.getElementById('Address 1').value;
+        member.Address2 = document.getElementById('Address 2').value;
+        member.Phoneno1 = document.getElementById('Phone no 1').value;
+        member.Phoneno2 = document.getElementById('Phone no 2').value;
+        member.Email = document.getElementById('Email').value;
+        member.image = document.getElementById('Preview').src;
+
+        // Save the updated data to localStorage
+        localStorage.setItem('Members', JSON.stringify(members));
+
+        // Re-render the table with the updated data
+        populateTable();
+
+        // Hide the modal
+        document.getElementById('Conntainner').style.display = 'none';
+
+        // Clear the form
+        document.getElementById('MemberID').value = '';
+        document.getElementById('First Name').value = '';
+        document.getElementById('Last Name').value = '';
+        document.getElementById('Date of Birth').value = '';
+        document.getElementById('Address 1').value = '';
+        document.getElementById('Address 2').value = '';
+        document.getElementById('Phone no 1').value = '';
+        document.getElementById('Phone no 2').value = '';
+        document.getElementById('Email').value = '';
+        document.getElementById('IMG').value = '';
+        document.getElementById('Preview').src = '';
+    };
+}
+
+// Image preview functionality
+document.getElementById('IMG').addEventListener('change', () => {
+    const file = document.getElementById('IMG').files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('Preview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Call populateTable on page load to display the table
+populateTable();
+
+
+        function searchMember() {
+    const searchId = document.getElementById('searchId').value.toUpperCase();
+    const filteredMembers1 = members.filter(member => member.id.toUpperCase().includes(searchId));
+    const filteredMembers2 = members.filter(member => member.firstName.toUpperCase().includes(searchId));
+    
+    // Merge the two filtered arrays
+    const filteredMembers = [...filteredMembers1, ...filteredMembers2];
+
+    populateTable(filteredMembers);
+}
+
+
+        populateTable();
+
+
+        const add = document.getElementById('Add');
+        const Conntainner = document.getElementById('Conntainner');
+        const IMG = document.getElementById('IMG');
+        const Preview = document.getElementById('Preview');
+        const SumBtn = document.getElementById('SumBtn');
+        const Clobtn = document.getElementById('Clobtn');
+
+        add.addEventListener('click',() =>{
+            Conntainner.style.display = 'flex'; 
+        });
+
+        Clobtn.addEventListener('click',() =>{
+            Conntainner.style.display = 'none'; 
+        });
+
+        SumBtn.addEventListener('click',() =>{
+            
+                const id = document.getElementById('MemberID').value.trim();
+                const firstName = document.getElementById('First Name').value.trim();
+                const lastName = document.getElementById('Last Name').value.trim();
+                const dateOfBirth = document.getElementById('Date of Birth').value.trim();
+                const Address1 = document.getElementById('Address 1').value.trim();
+                const Address2 = document.getElementById('Address 2').value.trim();
+                const Phoneno1 = document.getElementById('Phone no 1').value.trim();
+                const Phoneno2 = document.getElementById('Phone no 2').value.trim();
+                const Email = document.getElementById('Email').value.trim();
+                const image = Preview.src
+            
+
+                const newMembers = {
+                    id:id,
+                    firstName:firstName,
+                    lastName:lastName,
+                    dateOfBirth:dateOfBirth,
+                    Address1:Address1,
+                    Address2:Address2,
+                    Phoneno1:Phoneno1,
+                    Phoneno2:Phoneno2,
+                    Email:Email,
+                    image:image
+                }
+
+                if(id === '' || firstName === '' || lastName === '' ||dateOfBirth === ''||Address1 === '' ||Phoneno1 === ''){
+                    alert("All fields are required");
+                    return;
+                }
+            members.push(newMembers);
+            localStorage.setItem('Members',JSON.stringify(members));
+            populateTable();
+            Conntainner.style.display = 'none'; 
+
+            document.getElementById('MemberID').value = '';
+               document.getElementById('First Name').value = '';
+                document.getElementById('Last Name').value = '';
+                document.getElementById('Date of Birth').value = '';
+                document.getElementById('Address 1').value = '';
+                document.getElementById('Address 2').value = '';
+                document.getElementById('Phone no 1').value = '';
+                document.getElementById('Phone no 2').value = '';
+                document.getElementById('Email').value = '';
+                Preview.src = '';
+                IMG.value = '';
+
+        });
+
+        IMG.addEventListener('change',()=>{
+            const file = IMG.files[0];
+            if(file){
+                const reader = new FileReader();
+                reader.onload = function(e){
+                    Preview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });   
+    </script>
+</body>
+
+</html>

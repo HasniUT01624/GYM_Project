@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Designiation</title>
+</head>
+<style>
+    body {
+        background-color: rgb(13, 42, 57);
+    }
+
+    h1 {
+        color: aliceblue;
+        text-align: center;
+    }
+
+    .search {
+        margin: 0 40%;
+        padding-left: 1%;
+        padding-right: 10%;
+        height: 50px;
+        border-radius: 12px;
+    }
+
+    .search:hover {
+        cursor: pointer;
+    }
+
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .grid-item {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid;
+        padding: 10px;
+        box-shadow: 5px 10px;
+    }
+
+    .grid-item img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+    }
+
+    .grid-item h3,
+    .grid-item h2 {
+        margin: 10px 0;
+        font-size: 1.2em;
+        color: #333;
+        text-align: center;
+    }
+
+    .grid-item p {
+        margin: 5px 0;
+        color: #666;
+    }
+
+    .fees-duration {
+        margin: 10px 0;
+        font-weight: bold;
+        color: #007BFF;
+    }
+
+    .grid-item button {
+        background-color: red;
+        border-radius: 10px;
+        padding: 8px 12px;
+        border-color: #f8f2f2;
+        margin-left: 39%;
+        margin-top: 35px;
+        margin-bottom: 5px;
+        width: 100px;
+    }
+
+    .grid-item button:hover {
+        cursor: pointer;
+    }
+
+    .add {
+        margin: 0 47%;
+        border-radius: 12px;
+        padding: 1% 0;
+        width: 100px;
+        background-color: rgb(200, 206, 210);
+
+    }
+
+    .add:hover {
+        background-color: aliceblue;
+        cursor: pointer;
+    }
+
+    .grid-item button {
+        background-color: red;
+        border-radius: 10px;
+        padding: 8px 12px;
+        border-color: #f8f2f2;
+        margin-left: 39%;
+        margin-top: 35px;
+        margin-bottom: 5px;
+        width: 100px;
+    }
+
+    .grid-item button:hover {
+        cursor: pointer;
+    }
+
+    .add {
+        margin: 0 42%;
+        border-radius: 12px;
+        padding: 1% 0;
+        width: 200px;
+        background-color: rgb(200, 206, 210);
+
+    }
+
+    .add:hover {
+        background-color: aliceblue;
+        cursor: pointer;
+    }
+
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(34, 32, 32, 0.5);
+        justify-content: center;
+        align-items: center;
+    }
+
+
+
+    .modal-content {
+        background-color: white;
+        padding: 1px 50px;
+        border-radius: 5px;
+        width: 300px;
+
+
+    }
+
+    .modal-content h2 {
+        color: #0c0000;
+        text-align: center;
+    }
+
+
+
+    .modal-content input {
+        width: 100%;
+        padding: 8px;
+        margin: 10px 0;
+    }
+
+
+
+    .modal-content button {
+        padding: 10px;
+        margin: 10px 0;
+        width: 100%;
+        cursor: pointer;
+    }
+
+
+
+    #imagePreview {
+        width: 100%;
+        height: auto;
+        margin: 10px 0;
+    }
+
+    button {
+        background-color: red;
+        border-radius: 10px;
+        padding: 5px 12px;
+        border-color: #f8f2f2;
+    }
+</style>
+
+<body>
+
+    <h1>Select Designiation</h1>
+    <input type="text" id="searchid" class="search" placeholder="Search  id" onkeyup="filter()">
+
+
+    <div id="gritConntent" class="grid-container">
+        <!-- Javascript will be create grid dinamically -->
+    </div>
+
+    <br>
+    <button class="add" id="Addbtn">Add Designiation</button>
+    <div class="modal" id="Conntainner">
+
+        <div class="modal-content">
+            <h2>Add</h2>
+            <input type="text" id="Id" placeholder="Enter Id"  >
+            <input type="text" id="PositionName" placeholder="Enter PositionName"  >
+            <input type="text" id="salry" placeholder="Enter salry"  >
+            <input type="file" id="IMG"  >
+            <img id="Preview" alt="Preview">
+            <button id="SumBtn">Submit</button>
+            <button id="Clobtn">Close</button>
+
+        </div>
+        <p style="visibility: hidden;"></p>
+    </div>
+
+
+    <script>
+        // programs Sample Datas
+        const Designiations = JSON.parse(localStorage.getItem('DesigniationsData')) || [
+            { Id: "Admin001", PositionName: "Admin", salry: "50,000", image: "./Images/st1.png" },
+            { Id: "Trainer001", PositionName: "Trainer", salry: "40,000", image: "./Images/st2.jpg" },
+            { Id: "Clener001", PositionName: "Clener", salry: "30,000", image: "./Images/st3.jpg" }
+
+        ];
+
+
+        // Dinamically Create Grid
+        function populateGrid(filterId = Designiations) {
+            const gritConntent = document.getElementById('gritConntent');
+            gritConntent.innerHTML = '';
+
+            filterId.forEach((p, index) => {
+                const div = document.createElement('div');
+                div.classList.add('grid-item');
+
+                const onclick = document.createElement('button')
+                onclick.textContent = 'click me';
+                div.appendChild(onclick);
+                onclick.setAttribute(`onclick`, `window.location.href='StaffRoll.html?programId=${p.Id}'`);
+
+
+                const JProfile = document.createElement('img');
+                JProfile.src = p.image;
+                JProfile.alt = p.PositionName;
+
+
+                const JprogramsName = document.createElement('h2');
+                JprogramsName.textContent = p.PositionName;
+
+                const JprogramId = document.createElement('h2');
+                JprogramId.textContent = p.Id;
+                JprogramId.style.color = 'red';
+
+                const salry = document.createElement('h3');
+                salry.textContent = `Rs.${p.salry}`;
+
+                const deletebtn = document.createElement('button');
+                deletebtn.textContent = 'Delete';
+                deletebtn.onclick = () => deleteGridItem(index);
+
+                const editbtn = document.createElement('button');
+                editbtn.textContent = 'Edit';
+                editbtn.style.backgroundColor = 'green';
+                editbtn.style.color = "white";
+                editbtn.onclick = () => editGridItem(index); // Call edit function when clicked
+
+
+
+                div.appendChild(JProfile);
+                div.appendChild(JprogramsName);
+                div.appendChild(JprogramId);
+                div.appendChild(salry);
+                div.appendChild(deletebtn);
+                div.appendChild(editbtn);
+
+                gritConntent.appendChild(div);
+
+            });
+        }
+        function deleteGridItem(index) {
+            Designiations.splice(index, 1); // Remove member from array
+            localStorage.setItem('DesigniationsData', JSON.stringify(Designiations));
+
+            populateGrid();// Refresh the table
+        }
+
+
+        function editGridItem(index) {
+            const designation = Designiations[index];
+
+            // Populate form with the existing data
+            document.getElementById('Id').value = designation.Id;
+            document.getElementById('PositionName').value = designation.PositionName;
+            document.getElementById('salry').value = designation.salry;
+            document.getElementById('Preview').src = designation.image;
+
+            // Show the form
+            document.getElementById('Conntainner').style.display = 'flex';
+
+            // Update the submit button functionality to edit the designation
+            document.getElementById('SumBtn').onclick = () => {
+                designation.Id = document.getElementById('Id').value;
+                designation.PositionName = document.getElementById('PositionName').value;
+                designation.salry = document.getElementById('salry').value;
+                designation.image = document.getElementById('Preview').src;
+
+                // Update the array and localStorage
+                // Designiations[index] = designation;
+                localStorage.setItem('DesigniationsData', JSON.stringify(Designiations));
+
+                // Refresh the grid and hide the form
+                populateGrid();
+                // Conntainner.style.display = 'none';
+                document.getElementById('Conntainner').style.display = 'none';
+
+                // Clear the form
+                document.getElementById('Id').value = '';
+                document.getElementById('PositionName').value = '';
+                document.getElementById('salry').value = '';
+                // Preview.src = '';
+                // IMG.value = '';
+                document.getElementById('Preview').src = '';
+                document.getElementById('IMG').value = '';
+            };
+        }
+
+        function filter() {
+            const search = document.getElementById('searchid').value.toUpperCase();
+            const filterId = Designiations.filter(p => p.PositionName.includes(search));
+            populateGrid(filterId);
+        }
+        populateGrid();
+
+        const add = document.getElementById('Addbtn');
+        const Conntainner = document.getElementById('Conntainner');
+        const IMG = document.getElementById('IMG');
+        const Preview = document.getElementById('Preview');
+        const SumBtnx = document.getElementById('SumBtn');
+        const Clobtn = document.getElementById('Clobtn');
+
+
+
+        add.addEventListener('click', () => {
+            Conntainner.style.display = 'flex';
+        });
+
+        Clobtn.addEventListener('click', () => {
+            Conntainner.style.display = 'none';
+        });
+
+
+        SumBtnx.addEventListener('click', () => {
+    // Get the input values
+    const id = document.getElementById('Id').value.trim();
+    const positionName = document.getElementById('PositionName').value.trim();
+    const salry = document.getElementById('salry').value.trim();
+    const image = Preview.src;
+    
+    // Check if any field is empty
+    if (id === '' || positionName === '' || salry === '') {
+        alert('All fields are required.');
+        return; // Stop the function if validation fails
+    }
+
+    // If all fields are filled, proceed with adding the new designation
+    const newDesigniations = {
+        Id: id,
+        PositionName: positionName,
+        salry: salry,
+        image: image
+    }
+
+    // Push the new data to the array and save to localStorage
+    Designiations.push(newDesigniations);
+    localStorage.setItem('DesigniationsData', JSON.stringify(Designiations));
+    
+    // Populate the grid and hide the form
+    populateGrid();
+    Conntainner.style.display = 'none';
+
+    // Clear the form fields
+    document.getElementById('Id').value = '';
+    document.getElementById('PositionName').value = '';
+    document.getElementById('salry').value = '';
+    Preview.src = '';
+    IMG.value = '';
+});
+
+
+        IMG.addEventListener('change', () => {
+            const file = IMG.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    Preview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+
+
+
+    </script>
+</body>

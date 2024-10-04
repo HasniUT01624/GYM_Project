@@ -1,0 +1,258 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members Medical Conditions Report</title>
+</head>
+<style>
+    body {
+        background-color: rgb(13, 42, 57);
+    }
+
+    h1 {
+        color: #f8f2f2;
+        /* text-align: center; */
+        margin-left: 37%;
+    }
+
+    .search {
+        margin: 0 43%;
+        padding-left: 1%;
+        padding-right: 10%;
+        height: 50px;
+        border-radius: 12px;
+    }
+
+    .search:hover {
+        cursor: pointer;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: white;
+        padding: 10px;
+        box-shadow: 5px 10px;
+        border-radius: 12px;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid #0c0000;
+
+    }
+
+    th,
+    td {
+        padding: 10px;
+        text-align:center;
+    }
+
+    th {
+        background-color: rgb(200, 206, 210);
+        text-align: center;
+    }
+
+    tr:nth-child(even) {
+        background-color: rgb(200, 206, 210);
+    }
+
+    tr:hover {
+        background-color: rgb(200, 206, 210);
+        cursor: pointer;
+    }
+
+    img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+
+    .add {
+        margin: 0 50%;
+        border-radius: 12px;
+        padding: 1% 0;
+        width: 100px;
+        background-color: rgb(200, 206, 210);
+
+    }
+
+    .add:hover {
+        background-color: aliceblue;
+        cursor: pointer;
+    }
+
+    button {
+        background-color: red;
+        border-radius: 10px;
+        padding: 5px 12px;
+        border-color: #f8f2f2;
+    }
+
+    /* Modal styles */
+    .modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(34, 32, 32, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        
+
+        .modal-content {
+            background-color: white;
+            padding: 1px 50px;
+            border-radius: 5px;
+            width: 300px;
+
+
+        }
+        
+        .modal-content h2 {
+            color: #0c0000;
+            text-align: center;
+        }
+
+       
+
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+        }
+
+        
+
+        .modal-content button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        
+
+        #imagePreview {
+            width: 100%;
+            height: auto;
+            margin: 10px 0;
+        }
+        a{color: #0a0a0a; margin-left: 90%; background-color: aliceblue; padding: 12px; border-radius: 10px; cursor: pointer;
+        text-decoration: none;}
+        a:hover{background-color: gainsboro;}
+
+ 
+</style>
+<body>
+    <h1>Members Medical Conditions Report</h1>
+    
+    <!-- Search Input -->
+    <input type="text" id="searchInput" class="search"  placeholder="Search by Member ID" onkeyup="filterById()" />
+
+    <a href="./Admin.html"> Go Admin Page</a>
+
+    <table id="membersTable" border="1">
+        <thead>
+            <tr>
+                <th>Member ID</th>
+                <th>Medical Condition Name</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Table rows will be populated here -->
+        </tbody>
+    </table>
+
+    
+
+    <script>
+        // Sample data from localStorage or default arrays
+        const MConditions = JSON.parse(localStorage.getItem('MCData')) || [
+            { MedicalID: 'MC001', Name: 'Arthritis' },
+            { MedicalID: 'MC002', Name: 'Asthma' },
+            { MedicalID: 'MC003', Name: 'Back pain' },
+            { MedicalID: 'MC004', Name: 'Heart disease' },
+            { MedicalID: 'MC005', Name: 'Diabetes' }
+        ];
+
+        const MemberMedical = JSON.parse(localStorage.getItem('MemberMedical')) || [
+            { memberID: 'M001', programID: 'MC002' },
+            { memberID: 'M003', programID: 'MC005' },
+            { memberID: 'M002', programID: 'MC001' }
+        ];
+
+        const members = JSON.parse(localStorage.getItem('Members')) || [
+            { id: 'M001', firstName: 'John', lastName: 'Doe' },
+            { id: 'M002', firstName: 'Jane', lastName: 'Smith' },
+            { id: 'M003', firstName: 'Michael', lastName: 'Johnson' }
+        ];
+
+        // Combine data from localStorage entries into one array
+        function getCombinedData() {
+            return MemberMedical.map(mm => {
+                // Find the corresponding medical condition
+                const medicalCondition = MConditions.find(mc => mc.MedicalID === mm.programID);
+
+                // Find the corresponding member details
+                const member = members.find(m => m.id === mm.memberID);
+
+                return {
+                    // MedicalID: mm.programID,
+                    memberID: mm.memberID,
+                    Name: medicalCondition ? medicalCondition.Name : 'Unknown',
+                    firstName: member ? member.firstName : 'Unknown',
+                    lastName: member ? member.lastName : 'Unknown'
+                };
+            });
+        }
+
+        // Function to render members table
+        function renderMembersTable(data) {
+            const tableBody = document.querySelector("#membersTable tbody");
+            tableBody.innerHTML = ""; // Clear existing rows
+
+            data.forEach(entry => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <!-- <td>${entry.MedicalID}</td>-->
+                    <td>${entry.memberID}</td>
+                    <td>${entry.Name}</td>
+                    <td>${entry.firstName}</td>
+                    <td>${entry.lastName}</td>
+                `;
+
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Function to filter by Member ID as user types
+        function filterById() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            const combinedData = getCombinedData();
+            const filteredData = combinedData.filter(entry => 
+           entry.memberID.toLowerCase().includes(searchInput) || 
+           entry.firstName.toLowerCase().includes(searchInput)
+    );
+            renderMembersTable(filteredData);
+        }
+
+        // Initial render of the table
+        renderMembersTable(getCombinedData());
+    </script>
+</body>
+</html>
+
+
